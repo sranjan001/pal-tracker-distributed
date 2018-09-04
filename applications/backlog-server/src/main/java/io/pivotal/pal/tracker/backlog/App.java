@@ -3,19 +3,23 @@ package io.pivotal.pal.tracker.backlog;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.client.RestOperations;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 
 import java.util.TimeZone;
 
 
+@EnableWebSecurity
+@EnableResourceServer
+@EnableCircuitBreaker
+@EnableEurekaClient
 @SpringBootApplication
 @ComponentScan({"io.pivotal.pal.tracker.backlog", "io.pivotal.pal.tracker.restsupport"})
-@EnableEurekaClient
-@EnableCircuitBreaker
 public class App {
 
     public static void main(String[] args) {
@@ -25,8 +29,8 @@ public class App {
 
     @Bean
     ProjectClient projectClient(
-        RestOperations restOperations,
-        @Value("${registration.server.endpoint}") String registrationEndpoint
+            RestOperations restOperations,
+            @Value("${registration.server.endpoint}") String registrationEndpoint
     ) {
         return new ProjectClient(restOperations, registrationEndpoint);
     }
